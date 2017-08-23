@@ -15,7 +15,12 @@ const app = express();
 
 // initialize socket
 var server = require('http').Server(app);
-var io = require('socket.io')(server);
+const WebSocket = require('ws');
+const io = new WebSocket("http://localhost:3000/", {
+// const ws = new WebSocket('ws://www.host.com/path', {
+  perMessageDeflate: false
+});
+// var io = require('socket.io')(server);
 
 app.use(bodyParser());
 

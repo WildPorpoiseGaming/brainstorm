@@ -1,5 +1,6 @@
 import *  as axiosCall from '../axiosCalls'
-import io from "socket.io-client";
+// import io from "socket.io-client";
+import io from "ws";
 var socket = io();
 
 export function upVote(score, commentId) {
