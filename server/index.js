@@ -13,13 +13,23 @@ var GOOGLE_CLIENT_SECRET = require('../auth-config.js').GOOGLE_CLIENT_SECRET;
 
 const app = express();
 
+
 // initialize socket
+
+const expressWebSocket = require('express-ws');
+const websocketStream = require('websocket-stream/stream');
 var server = require('http').Server(app);
-const WebSocket = require('ws');
-const io = new WebSocket("http://localhost:3000/", {
-// const ws = new WebSocket('ws://www.host.com/path', {
-  perMessageDeflate: false
+
+expressWebSocket(app, null, {
+    // ws options here
+    perMessageDeflate: false,
 });
+
+// const WebSocket = require('ws');
+// const io = new WebSocket("http://localhost:3000/", {
+// // const ws = new WebSocket('ws://www.host.com/path', {
+//   perMessageDeflate: false
+// });
 // var io = require('socket.io')(server);
 
 app.use(bodyParser());
@@ -140,7 +150,15 @@ server.listen(3000, function () {
   console.log('Listening on port 3000');
 })
 
+app.ws('connection', function(ws, req) {
+  // convert ws instance to stream
+  const stream = websocketStream(ws, {
+    // websocket-stream options here
+    binary: true,
+  });
 
+  fs.createReadStream('bigdata.json').pipe(stream);
+});
 io.on('connection', function(socket){
   console.log('a user connected');
   socket.on('join session', function(session_id) {
